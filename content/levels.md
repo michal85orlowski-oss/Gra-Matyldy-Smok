@@ -23,7 +23,7 @@ W tym pliku znajdują się opisy fabularne, cele, przeciwnicy, mechaniki i wygl�
 - Cel gracza: przeprowadzić chłopca do miasta, odebrać jajo i dojść z nim do lasu.
 - Nowa mechanika: podstawowe poruszanie się chłopca po ziemi.
 - Przeciwnicy i zagrożenia: brak — poziom jest bezpiecznym wprowadzeniem do gry.
-- Wygląd i rysunki potrzebne od Matyldy: słońce, chmury, drzewo i trawa z rysunku 1 oraz chłopiec i jajo.
+- Wygląd i rysunki potrzebne od Matyldy: słońce, chmury, drzewo i trawa z rysunku 1 oraz chłopiec i jajo. W aktualnym prototypie punkt startowy obejmuje kolorowe miasteczko, a po podniesieniu jajo jest widoczne przy chłopcu.
 - Zakończenie planszy: w lesie z jaja wykluwa się smok. Następnie wyświetla się scenka oswajania smoka z rysunku 2.
 
 ### Plansza 2 — Pierwszy lot nad lasem
@@ -59,7 +59,7 @@ W tym pliku znajdują się opisy fabularne, cele, przeciwnicy, mechaniki i wygl�
 - Cel gracza: pokonać mniejsze łodzie łowców, a na końcu zatopić duży statek-bossa z rysunku 5.
 - Biom: ocean.
 - Nowa mechanika: walka nad wodą i unikanie sieci wystrzeliwanej przez statek-bossa co kilka sekund.
-- Przeciwnicy i zagrożenia: kilka mniejszych łodzi łowców, które strzelają zielonymi strzałami, oraz duży statek-boss. Trafienie siecią oznacza natychmiastową porażkę — schwytanie smoka.
+- Przeciwnicy i zagrożenia: kilka mniejszych łodzi łowców, które strzelają zielonymi strzałami, oraz duży statek-boss. Trafienie czarną siecią oznacza natychmiastową porażkę — schwytanie smoka.
 - Walka z bossem: po 3 trafieniach plazmą łamie się maszt statku; po 5 trafieniach statek płonie; po 6 trafieniach tonie.
 - Wygląd i rysunki potrzebne od Matyldy: powierzchnia oceanu, statek łowców, ogień, sieć oraz plazmowe pociski z rysunku 5.
 - Zakończenie planszy: po pokonaniu łodzi i szóstym trafieniu statek-boss tonie, a bohaterowie lecą dalej.
@@ -73,4 +73,4 @@ W tym pliku znajdują się opisy fabularne, cele, przeciwnicy, mechaniki i wygl�
 - Przeciwnicy i zagrożenia: po drodze do lodowca bohaterowie spotykają dwie łódki łowców smoków.
 - Walka finałowa: Lodowy Smok Alfa jest uwięziony w lodowcu. Po 8 trafieniach plazmą zostaje uwolniony.
 - Wygląd i rysunki potrzebne od Matyldy: ocean oraz Lodowy Smok Alfa z rysunku 8.
-- Zakończenie planszy i gry: po pokonaniu obu łódek i uwolnieniu Lodowego Smoka Alfa gra kończy się sukcesem.
+- Zakończenie planszy i gry: po pokonaniu obu łódek i ośmiu trafieniach uwalniających Lodowego Smoka Alfa gra kończy się sukcesem. Pojawia się scenka odlotu smoka z rysunku 7.

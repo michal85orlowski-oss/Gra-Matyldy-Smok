@@ -6,7 +6,7 @@ Opisy pogrupowane według zastosowania znajdują się w `docs/assets/`.
 
 ## Zasób postaci dla aktualnego prototypu
 
-`public/assets/sprites/matylda-characters-keyed-v1.png` to przygotowany zestaw czterech sprite’ów inspirowanych rysunkami 1 i 3: chłopca bez broni, smoka z chłopcem na grzbiecie, łowcy oraz miotacza włóczni. Nie jest to wycinek fotografii rysunku. Gra usuwa jednolite techniczne tło zestawu podczas ładowania, aby postacie mogły być rysowane na planszy.
+`public/assets/sprites/matylda-characters-keyed-v1.png` to przygotowany zestaw czterech sprite’ów inspirowanych rysunkami 1 i 3: chłopca bez broni, smoka z chłopcem na grzbiecie, łowcy oraz miotacza włóczni. Nie jest to wycinek fotografii rysunku. Gra usuwa jednolite różowe techniczne tło zestawu podczas ładowania, dlatego na planszy widać same postacie bez prostokątnej karty tła. Postacie są pomniejszone do czytelnej skali gry; łowcy i miotacze odwracają się w stronę bohatera.
 
 Oryginalne pliki w `public/assets/source-drawings/` pozostają niezmienione i są źródłem odniesienia dla następnych wariantów postaci.
 
@@ -70,10 +70,10 @@ Oryginalne pliki w `public/assets/source-drawings/` pozostają niezmienione i s�
 
 | Identyfikator | Element | Rola w grze |
 | --- | --- | --- |
-| `7A` | Chłopiec z płonącym mieczem | Główny bohater w scence oswajania smoka. |
-| `7B` | Nasz smok stojący na trawie | Towarzysz głównego bohatera. |
-| `7C` | Płonący miecz | Ważny rekwizyt fabularny scenki. |
-| `7D` | Scenka oswajania smoka | Dodatkowa scenka fabularna między poziomami. |
+| `7A` | Lodowy Smok Alfa w locie | Końcowa scenka zwycięstwa po skruszeniu lodowca. |
+| `7B` | Skrzydła i sylwetka odlatującego smoka | Ilustracja jego odzyskanej wolności. |
+| `7C` | Chłopiec z plazmą | Bohater widoczny w dolnej części scenki. |
+| `7D` | Scenka odlotu Smoka Alfa | Ilustrowane zakończenie po planszy 6. |
 
 ## Rysunek 8 — `source-drawings/8.jfif`
 

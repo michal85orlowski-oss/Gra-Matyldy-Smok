@@ -12,7 +12,18 @@ let lastTime = 0;
 const drawings = {};
 const drawingPaths = {
   taming: '/assets/previews/2-rotated.jpg',
+  captured: '/assets/source-drawings/6.jfif',
+  flyingDragon: '/assets/source-drawings/7.jfif',
   characters: '/assets/sprites/matylda-characters-keyed-v1.png'
+};
+
+// Kadry przygotowane z rysunków Matyldy. Różowe tło atlasu jest usuwane
+// podczas wczytywania, więc na planszy zostają wyłącznie postacie.
+const characterFrames = {
+  boy: [210, 145, 235, 420],
+  dragon: [560, 145, 605, 405],
+  hunter: [195, 685, 340, 435],
+  launcher: [650, 785, 435, 355]
 };
 
 const palette = {
@@ -48,7 +59,7 @@ function createGame(levelIndex) {
     plasma: [], projectiles: [], target, message: level.objective, messageUntil: 5000,
     hunters: level.hunters.map((x, index) => ({ x, homeX: x, phase: index * 1.4, lastShotAt: -index * 650, active: true })),
     launchers: level.launchers.map((x, index) => ({ x, lastShotAt: -1500 - index * 900, active: true })),
-    pulse: 0, targetHitFlash: 0, eggSparkle: 0
+    pulse: 0, targetHitFlash: 0, eggSparkle: 0, captured: false
   };
   hideOverlay();
 }
@@ -59,12 +70,14 @@ function showOverlay(kind) {
   } else if (kind === 'taming') {
     overlay.innerHTML = `<div class="panel story-panel"><img src="${drawingPaths.taming}" alt="Rysunek Matyldy przedstawiający oswajanie smoka" /><h2>Z jaja wykluł się smok!</h2><p>Chłopiec oswoił małego smoka. Od teraz będą razem uczyć się latać.</p><button class="play-button" data-action="next">PIERWSZY LOT</button></div>`;
   } else if (kind === 'gameover') {
-    overlay.innerHTML = `<div class="panel"><h1>OCH!</h1><h2>Smok potrzebuje odpoczynku</h2><p>Trzecie trafienie zakończyło tę próbę. Na początku planszy smok znów będzie miał trzy serduszka.</p><button class="play-button" data-action="restart">SPRÓBUJ PONOWNIE</button></div>`;
+    overlay.innerHTML = game.captured
+      ? `<div class="panel story-panel"><img src="${drawingPaths.captured}" alt="Rysunek Matyldy przedstawiający smoka schwytanego w sieć" /><h2>Smok został schwytany w sieć!</h2><p>Łowcy złapali smoka, ale możecie spróbować jeszcze raz od początku planszy.</p><button class="play-button" data-action="restart">SPRÓBUJ PONOWNIE</button></div>`
+      : `<div class="panel"><h1>OCH!</h1><h2>Smok potrzebuje odpoczynku</h2><p>Trzecie trafienie zakończyło tę próbę. Na początku planszy smok znów będzie miał trzy serduszka.</p><button class="play-button" data-action="restart">SPRÓBUJ PONOWNIE</button></div>`;
   } else if (kind === 'complete') {
     const next = game.levelIndex + 1;
     overlay.innerHTML = `<div class="panel"><h1>BRAWO!</h1><h2>${game.level.title}</h2><p>Udało się! Czas na dalszą część przygody.</p><button class="play-button" data-action="next">PLANSZA ${next + 1}</button></div>`;
   } else if (kind === 'victory') {
-    overlay.innerHTML = `<div class="panel"><h1>SMOK ALFA<br>WOLNY!</h1><p>Wspólna podróż zakończyła się sukcesem. Chłopiec i smok uratowali Lodowego Smoka Alfa!</p><button class="play-button" data-action="menu">ZAGRAJ JESZCZE RAZ</button></div>`;
+    overlay.innerHTML = `<div class="panel story-panel"><img src="${drawingPaths.flyingDragon}" alt="Rysunek Matyldy przedstawiający odlatującego smoka" /><h1>SMOK ALFA<br>WOLNY!</h1><p>Po skruszeniu lodowca Lodowy Smok Alfa odzyskał wolność i odlatuje.</p><button class="play-button" data-action="menu">ZAGRAJ JESZCZE RAZ</button></div>`;
   }
 }
 
@@ -114,6 +127,7 @@ function spawnProjectile(source, type = 'arrow') {
 
 function hitDragon(now, amount = 1, fatal = false) {
   if (game.status !== 'playing' || now < game.invulnerableUntil) return;
+  if (fatal) game.captured = true;
   game.health = fatal ? 0 : applyDragonDamage(game.health, amount);
   game.invulnerableUntil = now + 850;
   game.message = fatal ? 'Sieć schwytała smoka!' : 'Aj! Zielona strzała trafiła smoka!';
@@ -278,7 +292,7 @@ function drawBoy(x, y, egg = false) {
 }
 
 function drawDragon(x, y, blink) {
-  if (drawDrawingCrop('characters', 535, 110, 670, 500, x - 105, y - 76, 220, 145, blink)) return;
+  if (drawCharacter('dragon', x - 48, y - 34, 96, 64, blink)) return;
   context.save(); context.translate(x, y);
   context.globalAlpha = blink ? .45 : 1;
   context.fillStyle = '#ef7662'; context.beginPath(); context.ellipse(-8, 4, 35, 24, 0, 0, Math.PI * 2); context.fill();
@@ -293,18 +307,47 @@ function drawDragon(x, y, blink) {
 
 function drawDrawingCrop(name, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height, faded = false) {
   const image = drawings[name];
-  if (!image?.complete || !image.naturalWidth) return false;
+  // Obraz źródłowy ma naturalWidth, a po usunięciu różowego tła jest Canvasem
+  // z właściwością width. Oba warianty są prawidłowymi źródłami drawImage.
+  if (!image || !(image.naturalWidth || image.width)) return false;
   context.save();
   context.globalAlpha = faded ? .5 : 1;
-  context.beginPath(); context.roundRect(x, y, width, height, 6); context.clip();
   context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, x, y, width, height);
   context.restore();
   return true;
 }
 
+function drawCharacter(character, x, y, width, height, faded = false, flipped = false) {
+  if (!flipped) return drawDrawingCrop('characters', ...characterFrames[character], x, y, width, height, faded);
+  const image = drawings.characters;
+  if (!image || !(image.naturalWidth || image.width)) return false;
+  context.save();
+  context.globalAlpha = faded ? .5 : 1;
+  context.translate(x + width / 2, y + height / 2);
+  context.scale(-1, 1);
+  context.drawImage(image, ...characterFrames[character], -width / 2, -height / 2, width, height);
+  context.restore();
+  return true;
+}
+
 function drawBoyFromDrawing(x, y) {
-  if (drawDrawingCrop('characters', 180, 105, 320, 490, x - 38, y - 97, 76, 128)) return;
+  // Pozycja gracza jest liczona według dawnej wysokości bohatera; ten mniejszy
+  // sprite ma dolną krawędź dokładnie na ziemi zarówno podczas chodu, jak i skoku.
+  if (drawCharacter('boy', x - 16, y - 10, 32, 57)) {
+    if (game.player.egg) drawCarriedEgg(x, y);
+    return;
+  }
   drawBoy(x, y, game.player.egg);
+}
+
+function drawCarriedEgg(x, y) {
+  context.save();
+  context.translate(x + 14, y - 5);
+  context.rotate(-.18);
+  context.fillStyle = '#f7ebbd'; context.beginPath(); context.ellipse(0, 0, 5.5, 8, 0, 0, Math.PI * 2); context.fill();
+  context.strokeStyle = '#9e7158'; context.lineWidth = 2; context.stroke();
+  context.fillStyle = '#9b6c9c'; context.beginPath(); context.arc(-1.5, -2, 1.25, 0, Math.PI * 2); context.arc(2, 2.5, 1.15, 0, Math.PI * 2); context.fill();
+  context.restore();
 }
 
 function drawHunter(x) {
@@ -314,14 +357,50 @@ function drawHunter(x) {
   context.strokeStyle = '#6b4e38'; context.lineWidth = 3; context.beginPath(); context.arc(13, -24, 15, -1.4, 1.5); context.stroke(); context.restore();
 }
 
-function drawHunterFromDrawing(x) {
-  if (drawDrawingCrop('characters', 170, 640, 380, 510, x - 34, GROUND_Y - 92, 68, 88)) return;
+function drawHunterFromDrawing(x, onWater = false) {
+  if (onWater) drawHunterBoat(x);
+  if (drawCharacter('hunter', x - 15, GROUND_Y - 39, 30, 39, false, game.player.x < x)) return;
   drawHunter(x);
 }
 
 function drawLauncher(x) {
-  if (drawDrawingCrop('characters', 630, 720, 520, 470, x - 45, GROUND_Y - 94, 90, 88)) return;
+  if (drawCharacter('launcher', x - 20, GROUND_Y - 32, 40, 32, false, game.player.x < x)) return;
   context.save(); context.translate(x, GROUND_Y); roundRect(-26, -34, 52, 34, 6, '#9a6c42', '#4e3b2e', 3); context.fillStyle = '#c9965a'; context.fillRect(-5, -56, 10, 28); context.strokeStyle = '#4e3b2e'; context.lineWidth = 4; context.beginPath(); context.moveTo(-38, -36); context.lineTo(31, -65); context.stroke(); context.restore();
+}
+
+function drawHunterBoat(x) {
+  const bob = Math.sin(game.elapsed / 520 + x / 75) * 3;
+  const deckY = GROUND_Y - 4 + bob;
+  context.save();
+  context.translate(x, deckY);
+  context.fillStyle = '#8a593d';
+  context.beginPath(); context.moveTo(-52, 0); context.lineTo(53, 0); context.lineTo(37, 25); context.lineTo(-37, 25); context.closePath(); context.fill();
+  context.strokeStyle = '#4f352b'; context.lineWidth = 3; context.stroke();
+  context.fillStyle = '#c89054'; context.fillRect(-43, -7, 86, 9);
+  context.strokeStyle = '#e4c17a'; context.lineWidth = 2;
+  context.beginPath(); context.moveTo(-37, 9); context.lineTo(34, 9); context.moveTo(-24, 18); context.lineTo(23, 18); context.stroke();
+  context.restore();
+}
+
+function drawCity() {
+  const buildings = [
+    [310, 440, 70, 105, '#e9a768', '#c96754'],
+    [385, 403, 90, 142, '#f3c568', '#d97756'],
+    [480, 425, 80, 120, '#83b9c4', '#4e8498'],
+    [565, 388, 98, 157, '#df9272', '#b75c54'],
+    [668, 430, 65, 115, '#e9c586', '#b98454']
+  ];
+  buildings.forEach(([x, y, width, height, wall, roof]) => {
+    roundRect(x, y, width, height, 5, wall, '#6a4d45', 2);
+    context.fillStyle = roof; context.beginPath(); context.moveTo(x - 9, y + 4); context.lineTo(x + width / 2, y - 39); context.lineTo(x + width + 9, y + 4); context.closePath(); context.fill();
+    context.strokeStyle = '#6a4d45'; context.lineWidth = 2; context.stroke();
+    context.fillStyle = '#fff3bd';
+    for (let windowY = y + 20; windowY < y + height - 25; windowY += 31) {
+      for (let windowX = x + 14; windowX < x + width - 12; windowX += 27) context.fillRect(windowX, windowY, 13, 16);
+    }
+    context.fillStyle = '#80523d'; context.fillRect(x + width / 2 - 10, y + height - 31, 20, 31);
+  });
+  text('MIASTO', 520, 354, 18, '#fffbea', 'center');
 }
 
 function drawTarget(target) {
@@ -343,7 +422,7 @@ function drawProjectiles() {
   game.plasma.forEach((shot) => { context.fillStyle = '#7c3a90'; context.beginPath(); context.ellipse(shot.x, shot.y, 13, 8, Math.PI / 4, 0, Math.PI * 2); context.fill(); context.fillStyle = '#b16cc2'; context.beginPath(); context.arc(shot.x, shot.y, 4, 0, Math.PI * 2); context.fill(); });
   game.projectiles.forEach((shot) => {
     context.save(); context.translate(shot.x, shot.y); context.rotate(Math.atan2(shot.vy, shot.vx));
-    if (shot.type === 'net') { context.strokeStyle = '#f1e7b5'; context.lineWidth = 3; context.strokeRect(-16, -16, 32, 32); context.beginPath(); context.moveTo(-16, -16); context.lineTo(16, 16); context.moveTo(16, -16); context.lineTo(-16, 16); context.stroke(); }
+    if (shot.type === 'net') { context.strokeStyle = '#24212a'; context.lineWidth = 3; context.strokeRect(-16, -16, 32, 32); context.beginPath(); context.moveTo(-16, -16); context.lineTo(16, 16); context.moveTo(16, -16); context.lineTo(-16, 16); context.stroke(); }
     else { context.strokeStyle = '#50c96d'; context.lineWidth = shot.type === 'spear' ? 5 : 3; context.beginPath(); context.moveTo(-12, 0); context.lineTo(13, 0); context.stroke(); context.fillStyle = '#48b762'; context.beginPath(); context.moveTo(15, 0); context.lineTo(8, -5); context.lineTo(8, 5); context.closePath(); context.fill(); }
     context.restore();
   });
@@ -361,12 +440,14 @@ function draw() {
   if (!game) { context.fillStyle = '#8bd6f2'; context.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT); return; }
   drawBackground(game.level.theme);
   if (game.level.mode === 'ground') {
-    context.fillStyle = '#e7c48f'; roundRect(414, 400, 125, 145, 10, '#e7c48f', '#8d6448', 3); context.fillStyle = '#d37a57'; context.beginPath(); context.moveTo(397, 402); context.lineTo(475, 340); context.lineTo(553, 402); context.closePath(); context.fill();
-    text('MIASTO', 475, 365, 13, '#fff8d9', 'center');
-    context.fillStyle = '#f4e5b8'; context.beginPath(); context.ellipse(game.level.eggX, GROUND_Y - 19, 13, 19, 0, 0, Math.PI * 2); context.fill(); context.strokeStyle = '#d69874'; context.stroke();
+    drawCity();
+    if (!game.player.egg) {
+      context.fillStyle = '#f4e5b8'; context.beginPath(); context.ellipse(game.level.eggX, GROUND_Y - 19, 13, 19, 0, 0, Math.PI * 2); context.fill(); context.strokeStyle = '#d69874'; context.stroke();
+    }
     drawTree(990, GROUND_Y - 4, 1.5); text('LAS', 990, GROUND_Y - 132, 16, '#fffbea', 'center'); drawBoyFromDrawing(game.player.x, game.player.y);
   } else {
-    game.hunters.filter((hunter) => hunter.active).forEach((hunter) => drawHunterFromDrawing(hunter.x)); game.launchers.filter((launcher) => launcher.active).forEach((launcher) => drawLauncher(launcher.x)); if (game.target) drawTarget(game.target); drawDragon(game.player.x, game.player.y, performance.now() < game.invulnerableUntil);
+    const onWater = game.level.theme === 'ocean' || game.level.theme === 'ice';
+    game.hunters.filter((hunter) => hunter.active).forEach((hunter) => drawHunterFromDrawing(hunter.x, onWater)); game.launchers.filter((launcher) => launcher.active).forEach((launcher) => drawLauncher(launcher.x)); if (game.target) drawTarget(game.target); drawDragon(game.player.x, game.player.y, performance.now() < game.invulnerableUntil);
   }
   drawProjectiles(); drawHud();
 }
@@ -392,7 +473,10 @@ function removeChromaKey(image) {
     const red = pixels.data[index];
     const green = pixels.data[index + 1];
     const blue = pixels.data[index + 2];
-    if (red > 205 && green < 90 && blue > 175) pixels.data[index + 3] = 0;
+    // JPEG pozostawia kilka odcieni różu przy konturach. Usuwamy wyłącznie
+    // nasycony róż tła, a ciemny ołówek i kolory rysunków pozostają nietknięte.
+    const pinkness = (red + blue) / 2 - green;
+    if (red > 175 && blue > 145 && pinkness > 115) pixels.data[index + 3] = 0;
   }
   spriteContext.putImageData(pixels, 0, 0);
   return spriteCanvas;

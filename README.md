@@ -7,9 +7,12 @@ Rodzinna gra przeglądarkowa o chłopcu i oswojonym smoku. W sześciu planszach 
 - Gra działa w przeglądarce jako aplikacja JavaScript + Canvas, uruchamiana przez Vite.
 - Plansza 1 jest bezpiecznym wprowadzeniem: chłopiec chodzi, skacze, odbiera jajo i idzie do lasu. Po niej pojawia się scenka oswojenia smoka.
 - W planszach 2–6 chłopiec siedzi na smoku i steruje lotem strzałkami.
+- Postacie korzystają z przygotowanego atlasu inspirowanego rysunkami Matyldy; różowe techniczne tło atlasu jest usuwane podczas ładowania.
+- W pierwszej planszy chłopiec odbiera jajo przy kolorowym miasteczku; po podniesieniu niesie je do lasu.
 - Tylko smok zionie fioletową plazmą. Spacja uruchamia strzał nie częściej niż raz na sekundę; plazma leci po skosie w dół.
-- Łowcy i miotacze włóczni stoją na ziemi, poruszają się lub atakują zielonymi pociskami pod kątem 45° co 4 sekundy.
+- Łowcy i miotacze włóczni zwracają się w stronę bohatera i atakują zielonymi pociskami pod kątem 45° co 4 sekundy; nad wodą łowcy płyną w łódkach.
 - Smok ma trzy serduszka. Trzecie trafienie wywołuje ekran porażki i restart bieżącej planszy.
+- Czarna sieć ze statku na planszy 5 chwyta smoka natychmiast i pokazuje scenkę z rysunku 6. Po uwolnieniu Smoka Alfa na planszy 6 wyświetla się scenka jego odlotu z rysunku 7.
 - W planszach 2–6 do dalszej planszy prowadzi pokonanie wszystkich łowców, miotaczy oraz celu fabularnego, jeśli występuje.
 
 ## Uruchomienie
