@@ -4,6 +4,12 @@ Ten dokument zapisuje znaczenie elementów widocznych na rysunkach źródłowych
 
 Opisy pogrupowane według zastosowania znajdują się w `docs/assets/`.
 
+## Zasób postaci dla aktualnego prototypu
+
+`public/assets/sprites/matylda-characters-keyed-v1.png` to przygotowany zestaw czterech sprite’ów inspirowanych rysunkami 1 i 3: chłopca bez broni, smoka z chłopcem na grzbiecie, łowcy oraz miotacza włóczni. Nie jest to wycinek fotografii rysunku. Gra usuwa jednolite techniczne tło zestawu podczas ładowania, aby postacie mogły być rysowane na planszy.
+
+Oryginalne pliki w `public/assets/source-drawings/` pozostają niezmienione i są źródłem odniesienia dla następnych wariantów postaci.
+
 ## Rysunek 1 — `source-drawings/1.jfif`
 
 | Identyfikator | Element | Rola w grze |

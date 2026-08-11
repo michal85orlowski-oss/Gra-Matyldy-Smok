@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#70c7f4" />
+    <title>Jeźdcy smoków na końcu świata</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Wróć do menu">JEŹDCY SMOKÓW <span>NA KOŃCU ŚWIATA</span></a>
+        <div class="topbar-note">Rodzinna przygoda • 6 plansz</div>
+      </header>
+      <section class="game-frame" aria-label="Gra Smok Matyldy">
+        <canvas id="game" width="1120" height="630" aria-label="Plansza gry"></canvas>
+        <div id="overlay" class="overlay" aria-live="polite"></div>
+      </section>
+      <section class="controls" aria-label="Sterowanie">
+        <div class="control-copy"><strong>STEROWANIE</strong><span>Strzałki — ruch i lot • ↑ — skok • Spacja — plazma</span></div>
+        <div class="touch-controls" aria-label="Przyciski dotykowe">
+          <button data-control="ArrowLeft" aria-label="W lewo">←</button>
+          <button data-control="ArrowUp" aria-label="W górę lub skok">↑</button>
+          <button data-control="ArrowRight" aria-label="W prawo">→</button>
+          <button data-control="Space" class="fire" aria-label="Plazma">✦</button>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

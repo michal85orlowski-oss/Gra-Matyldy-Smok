@@ -1,5 +1,24 @@
 # Propozycja stacku technologicznego dla Gry Matyldy
 
+> Status: dokument zawiera długoterminową propozycję. Aktualny grywalny prototyp nie używa jeszcze Phaser ani TypeScript.
+
+## Aktualna implementacja
+
+- JavaScript ES modules oraz element `<canvas>` do renderowania gry 2D.
+- Vite jako lokalny serwer deweloperski i narzędzie budowania.
+- Dane sześciu plansz w `src/data/levels/level-01.json`–`level-06.json`.
+- Moduły `src/game/constants.js`, `src/game/combat.js` i `src/game/levelLoader.js` dla podstawowej logiki.
+- Wbudowany test Node (`tests/combat.test.js`) dla reguły trzech trafień smoka.
+
+Aktualne polecenia:
+
+```bash
+npm install
+npm run dev
+npm test
+npm run build
+```
+
 ## Zalecana technologia
 
 Dla tej gry przeglądarkowej najlepszym wyborem jest:

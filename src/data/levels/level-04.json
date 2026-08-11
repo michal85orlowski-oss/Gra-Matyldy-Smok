@@ -1,0 +1,13 @@
+{
+  "id": 4,
+  "title": "Uwolnienie smoka",
+  "objective": "Doleć do klatki i otwórz ją plazmą.",
+  "tip": "Spacja wystrzeliwuje plazmę. Kolejny strzał jest możliwy po sekundzie.",
+  "mode": "flight",
+  "completion": "clearEnemies",
+  "theme": "camp",
+  "goalX": 1070,
+  "hunters": [270, 440, 650, 920],
+  "launchers": [580, 850],
+  "target": { "type": "cage", "x": 930, "y": 395, "hits": 1 }
+}
