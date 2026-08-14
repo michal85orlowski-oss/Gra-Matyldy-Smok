@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "title": "Jajo w lesie",
+  "objective": "Dojdź do miasta, odbierz jajo i zanieś je do lasu.",
+  "tip": "Używaj ← → do ruchu, a ↑ aby skoczyć.",
+  "mode": "ground",
+  "completion": "reachGoal",
+  "theme": "meadow",
+  "goalX": 1030,
+  "eggX": 490,
+  "hunters": [],
+  "launchers": [],
+  "target": null
+}

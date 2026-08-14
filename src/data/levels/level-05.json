@@ -1,0 +1,13 @@
+{
+  "id": 5,
+  "title": "Ocean łowców",
+  "objective": "Pokonaj statek łowców — potrzeba sześciu trafień plazmą.",
+  "tip": "Uważaj na sieć statku. Trafienie siecią kończy poziom od razu.",
+  "mode": "flight",
+  "completion": "clearEnemies",
+  "theme": "ocean",
+  "goalX": 1080,
+  "hunters": [310, 560, 750],
+  "launchers": [],
+  "target": { "type": "ship", "x": 885, "y": 420, "hits": 6, "fatalAttack": "net" }
+}

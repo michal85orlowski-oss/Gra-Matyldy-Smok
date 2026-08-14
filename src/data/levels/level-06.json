@@ -1,0 +1,13 @@
+{
+  "id": 6,
+  "title": "Lodowiec Smoka Alfa",
+  "objective": "Uwolnij Lodowego Smoka Alfa ośmioma trafieniami plazmy.",
+  "tip": "Lodowiec nie atakuje — ostrożnie omijaj tylko łodzie łowców.",
+  "mode": "flight",
+  "completion": "clearEnemies",
+  "theme": "ice",
+  "goalX": 1080,
+  "hunters": [340, 630],
+  "launchers": [],
+  "target": { "type": "ice", "x": 900, "y": 380, "hits": 8 }
+}

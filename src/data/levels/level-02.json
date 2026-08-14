@@ -1,0 +1,13 @@
+{
+  "id": 2,
+  "title": "Pierwszy lot nad lasem",
+  "objective": "Przeleć ponad lasem i dotrzyj do końca trasy.",
+  "tip": "Strzałki sterują lotem. Unikaj zielonych strzał!",
+  "mode": "flight",
+  "completion": "clearEnemies",
+  "theme": "forest",
+  "goalX": 1060,
+  "hunters": [330, 520, 720, 890, 1010],
+  "launchers": [630, 940],
+  "target": null
+}

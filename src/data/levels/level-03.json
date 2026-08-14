@@ -1,0 +1,13 @@
+{
+  "id": 3,
+  "title": "Nad lasem i górami",
+  "objective": "Przeleć przez górski las i uniknij obrony łowców.",
+  "tip": "W górach trzeba zwinnie omijać wysokie drzewa.",
+  "mode": "flight",
+  "completion": "clearEnemies",
+  "theme": "mountain",
+  "goalX": 1060,
+  "hunters": [260, 410, 570, 730, 880, 1010],
+  "launchers": [500, 810],
+  "target": null
+}
