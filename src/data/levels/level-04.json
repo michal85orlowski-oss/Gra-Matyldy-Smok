@@ -5,6 +5,7 @@
   "tip": "Spacja wystrzeliwuje plazmę. Kolejny strzał jest możliwy po sekundzie.",
   "mode": "flight",
   "completion": "clearEnemies",
+  "completionScene": "freedDragon",
   "theme": "camp",
   "goalX": 1070,
   "hunters": [270, 440, 650, 920],

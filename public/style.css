@@ -4,8 +4,8 @@
 * { box-sizing: border-box; }
 body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(circle at 50% 0, #e5f6fc 0, #f5f0de 63%); }
 button { font: inherit; }
-.game-shell { width: min(1180px, 100%); margin: 0 auto; padding: 18px 22px 26px; }
-.topbar { display:flex; justify-content:space-between; align-items:center; padding: 0 6px 14px; }
+.game-shell { width: min(96vw, 1600px); margin: 0 auto; padding: 6px 0 12px; }
+.topbar { display:flex; justify-content:space-between; align-items:center; padding: 0 6px 7px; }
 .brand { color:#263c4e; text-decoration:none; font: 800 clamp(1.25rem, 3vw, 2rem)/1 "Baloo 2", sans-serif; letter-spacing: .04em; transform: rotate(-1deg); }
 .brand span { color:#f06d4c; }
 .topbar-note { font-weight:800; color:#63809a; font-size:.9rem; }
@@ -21,7 +21,7 @@ canvas { width:100%; height:auto; display:block; image-rendering:auto; }
 .panel .tiny { margin-top:16px; font-size:.78rem; color:#678; }
 .play-button { cursor:pointer; border:0; border-radius:16px; padding:12px 27px; color:white; background:#ef6b4c; box-shadow:0 5px 0 #bd4635; font:800 1.15rem "Baloo 2",sans-serif; transition:transform .15s; }
 .play-button:hover, .play-button:focus-visible { transform:translateY(-2px); background:#f57c5f; outline:3px solid #f6bd56; }
-.controls { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:14px 7px 0; }
+.controls { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:8px 7px 0; }
 .control-copy { display:flex; align-items:center; flex-wrap:wrap; gap:9px 13px; color:#537084; font-size:.86rem; }
 .control-copy strong { color:#e06b4e; letter-spacing:.1em; }
 .touch-controls { display:none; gap:7px; }

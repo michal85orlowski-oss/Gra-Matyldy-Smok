@@ -5,6 +5,7 @@
   "tip": "Lodowiec nie atakuje — ostrożnie omijaj tylko łodzie łowców.",
   "mode": "flight",
   "completion": "clearEnemies",
+  "completionScene": "victory",
   "theme": "ice",
   "goalX": 1080,
   "hunters": [340, 630],
