@@ -8,6 +8,13 @@ Opisy pogrupowane według zastosowania znajdują się w `docs/assets/`.
 
 `public/assets/sprites/matylda-characters-keyed-v1.png` zawiera zaakceptowany zestaw czterech poprawionych postaci: chłopca bez broni, smoka z chłopcem na grzbiecie, łowcę oraz miotacz włóczni. Gra usuwa różowe tło techniczne zestawu podczas ładowania, więc na planszy widać wyłącznie postacie. Łowcy i miotacze odwracają się w stronę bohatera.
 
+| Postać | Docelowy rozmiar na planszy |
+| --- | --- |
+| Chłopiec | 32 × 57 px |
+| Smok z chłopcem | 96 × 64 px |
+| Łowca | 30 × 39 px |
+| Miotacz włóczni | 40 × 32 px |
+
 Oryginalne pliki w `public/assets/source-drawings/` pozostają niezmienione.
 
 ## Rysunek 1 — `source-drawings/1.jfif`
