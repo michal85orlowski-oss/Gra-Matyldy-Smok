@@ -6,9 +6,9 @@ Opisy pogrupowane według zastosowania znajdują się w `docs/assets/`.
 
 ## Zasób postaci dla aktualnego prototypu
 
-`public/assets/sprites/matylda-characters-keyed-v1.png` to przygotowany zestaw czterech sprite’ów inspirowanych rysunkami 1 i 3: chłopca bez broni, smoka z chłopcem na grzbiecie, łowcy oraz miotacza włóczni. Nie jest to wycinek fotografii rysunku. Gra usuwa jednolite różowe techniczne tło zestawu podczas ładowania, dlatego na planszy widać same postacie bez prostokątnej karty tła. Postacie są pomniejszone do czytelnej skali gry; łowcy i miotacze odwracają się w stronę bohatera.
+`public/assets/sprites/matylda-characters-keyed-v1.png` zawiera zaakceptowany zestaw czterech poprawionych postaci: chłopca bez broni, smoka z chłopcem na grzbiecie, łowcę oraz miotacz włóczni. Gra usuwa różowe tło techniczne zestawu podczas ładowania, więc na planszy widać wyłącznie postacie. Łowcy i miotacze odwracają się w stronę bohatera.
 
-Oryginalne pliki w `public/assets/source-drawings/` pozostają niezmienione i są źródłem odniesienia dla następnych wariantów postaci.
+Oryginalne pliki w `public/assets/source-drawings/` pozostają niezmienione.
 
 ## Rysunek 1 — `source-drawings/1.jfif`
 

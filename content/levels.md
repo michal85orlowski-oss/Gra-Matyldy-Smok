@@ -51,7 +51,7 @@ W tym pliku znajdują się opisy fabularne, cele, przeciwnicy, mechaniki i wygl�
 - Nowa mechanika: atak plazmą na element fabularny — klatkę.
 - Przeciwnicy i zagrożenia: poruszający się łowcy smoków, zielone strzały, wyrzutnie włóczni oraz klatka pilnowana przez łowców.
 - Wygląd i rysunki potrzebne od Matyldy: górskie tło, obóz łowców i klatki z rysunku 4.
-- Zakończenie planszy: po zniszczeniu obrony obozu strzał plazmy niszczy klatkę, a uratowany smok odlatuje. Scena korzysta z rysunku 4.
+- Zakończenie planszy: po zniszczeniu obrony obozu strzał plazmy niszczy klatkę, a uratowany smok odlatuje. Poziom kończy się scenką z rysunku 4.
 
 ### Plansza 5 — Ocean łowców
 
@@ -61,6 +61,7 @@ W tym pliku znajdują się opisy fabularne, cele, przeciwnicy, mechaniki i wygl�
 - Nowa mechanika: walka nad wodą i unikanie sieci wystrzeliwanej przez statek-bossa co kilka sekund.
 - Przeciwnicy i zagrożenia: kilka mniejszych łodzi łowców, które strzelają zielonymi strzałami, oraz duży statek-boss. Trafienie czarną siecią oznacza natychmiastową porażkę — schwytanie smoka.
 - Walka z bossem: po 3 trafieniach plazmą łamie się maszt statku; po 5 trafieniach statek płonie; po 6 trafieniach tonie.
+- Animacja zniszczenia: płonący statek powoli przechyla się i znika pod wodą, a każda pokonana łódź łowców także tonie przed zakończeniem planszy.
 - Wygląd i rysunki potrzebne od Matyldy: powierzchnia oceanu, statek łowców, ogień, sieć oraz plazmowe pociski z rysunku 5.
 - Zakończenie planszy: po pokonaniu łodzi i szóstym trafieniu statek-boss tonie, a bohaterowie lecą dalej.
 - Porażka: po schwytaniu smoka w sieć wyświetlana jest scenka z rysunku 6, po czym poziom rozpoczyna się od nowa.
@@ -73,4 +74,4 @@ W tym pliku znajdują się opisy fabularne, cele, przeciwnicy, mechaniki i wygl�
 - Przeciwnicy i zagrożenia: po drodze do lodowca bohaterowie spotykają dwie łódki łowców smoków.
 - Walka finałowa: Lodowy Smok Alfa jest uwięziony w lodowcu. Po 8 trafieniach plazmą zostaje uwolniony.
 - Wygląd i rysunki potrzebne od Matyldy: ocean oraz Lodowy Smok Alfa z rysunku 8.
-- Zakończenie planszy i gry: po pokonaniu obu łódek i ośmiu trafieniach uwalniających Lodowego Smoka Alfa gra kończy się sukcesem. Pojawia się scenka odlotu smoka z rysunku 7.
+- Zakończenie planszy i gry: po pokonaniu obu łódek i ośmiu trafieniach uwalniających Lodowego Smoka Alfa gra kończy się sukcesem. Finał pokazuje uwolnionego Smoka Alfa na rysunku 8.

@@ -10,15 +10,18 @@ let levels = [];
 let game = null;
 let lastTime = 0;
 const drawings = {};
+const dragonMouthOffset = { x: 46, y: -6 };
+const BOAT_SINK_DURATION = 1400;
+const SHIP_SINK_DURATION = 2400;
 const drawingPaths = {
   taming: '/assets/previews/2-rotated.jpg',
   captured: '/assets/source-drawings/6.jfif',
-  flyingDragon: '/assets/source-drawings/7.jfif',
+  freedDragon: '/assets/source-drawings/4.jfif',
+  iceDragon: '/assets/source-drawings/8.jfif',
   characters: '/assets/sprites/matylda-characters-keyed-v1.png'
 };
 
-// Kadry przygotowane z rysunków Matyldy. Różowe tło atlasu jest usuwane
-// podczas wczytywania, więc na planszy zostają wyłącznie postacie.
+// Gotowy atlas zawiera cztery poprawione postacie na różowym tle technicznym.
 const characterFrames = {
   boy: [210, 145, 235, 420],
   dragon: [560, 145, 605, 405],
@@ -56,7 +59,7 @@ function createGame(levelIndex) {
     levelIndex, level, status: 'playing', startedAt: performance.now(), elapsed: 0,
     player: { x: 90, y: level.mode === 'ground' ? GROUND_Y - 47 : 270, vy: 0, egg: false },
     health: freshDragonHealth(), invulnerableUntil: 0, lastPlasmaAt: -PLASMA_COOLDOWN,
-    plasma: [], projectiles: [], target, message: level.objective, messageUntil: 5000,
+    plasma: [], projectiles: [], sinkingBoats: [], target, message: level.objective, messageUntil: 5000,
     hunters: level.hunters.map((x, index) => ({ x, homeX: x, phase: index * 1.4, lastShotAt: -index * 650, active: true })),
     launchers: level.launchers.map((x, index) => ({ x, lastShotAt: -1500 - index * 900, active: true })),
     pulse: 0, targetHitFlash: 0, eggSparkle: 0, captured: false
@@ -73,11 +76,13 @@ function showOverlay(kind) {
     overlay.innerHTML = game.captured
       ? `<div class="panel story-panel"><img src="${drawingPaths.captured}" alt="Rysunek Matyldy przedstawiający smoka schwytanego w sieć" /><h2>Smok został schwytany w sieć!</h2><p>Łowcy złapali smoka, ale możecie spróbować jeszcze raz od początku planszy.</p><button class="play-button" data-action="restart">SPRÓBUJ PONOWNIE</button></div>`
       : `<div class="panel"><h1>OCH!</h1><h2>Smok potrzebuje odpoczynku</h2><p>Trzecie trafienie zakończyło tę próbę. Na początku planszy smok znów będzie miał trzy serduszka.</p><button class="play-button" data-action="restart">SPRÓBUJ PONOWNIE</button></div>`;
+  } else if (kind === 'freedDragon') {
+    overlay.innerHTML = `<div class="panel story-panel"><img src="${drawingPaths.freedDragon}" alt="Rysunek Matyldy przedstawiający uratowanego smoka odlatującego z otwartej klatki" /><h1>SMOK JEST WOLNY!</h1><p>Plazma otworzyła klatkę. Uratowany smok odlatuje, a wasi bohaterowie ruszają w dalszą drogę.</p><button class="play-button" data-action="next">DALEJ</button></div>`;
   } else if (kind === 'complete') {
     const next = game.levelIndex + 1;
     overlay.innerHTML = `<div class="panel"><h1>BRAWO!</h1><h2>${game.level.title}</h2><p>Udało się! Czas na dalszą część przygody.</p><button class="play-button" data-action="next">PLANSZA ${next + 1}</button></div>`;
   } else if (kind === 'victory') {
-    overlay.innerHTML = `<div class="panel story-panel"><img src="${drawingPaths.flyingDragon}" alt="Rysunek Matyldy przedstawiający odlatującego smoka" /><h1>SMOK ALFA<br>WOLNY!</h1><p>Po skruszeniu lodowca Lodowy Smok Alfa odzyskał wolność i odlatuje.</p><button class="play-button" data-action="menu">ZAGRAJ JESZCZE RAZ</button></div>`;
+    overlay.innerHTML = `<div class="panel story-panel"><img src="${drawingPaths.iceDragon}" alt="Rysunek Matyldy przedstawiający uwolnionego Lodowego Smoka Alfa" /><h1>SMOK ALFA<br>WOLNY!</h1><p>Lodowiec pękł, a Lodowy Smok Alfa odzyskał wolność. To koniec wielkiej wyprawy!</p><button class="play-button" data-action="menu">ZAGRAJ JESZCZE RAZ</button></div>`;
   }
 }
 
@@ -115,7 +120,7 @@ function firePlasma(now) {
   game.lastPlasmaAt = now;
   const p = game.player;
   const angle = Math.PI / 4;
-  game.plasma.push({ x: p.x + 92, y: p.y - 20, vx: Math.cos(angle) * 500, vy: Math.sin(angle) * 500, age: 0 });
+  game.plasma.push({ x: p.x + dragonMouthOffset.x, y: p.y + dragonMouthOffset.y, vx: Math.cos(angle) * 500, vy: Math.sin(angle) * 500, age: 0 });
 }
 
 function spawnProjectile(source, type = 'arrow') {
@@ -141,7 +146,8 @@ function hitDragon(now, amount = 1, fatal = false) {
 function completeLevel() {
   if (game.status !== 'playing') return;
   game.status = 'complete';
-  window.setTimeout(() => showOverlay(game.levelIndex === 0 ? 'taming' : game.levelIndex === levels.length - 1 ? 'victory' : 'complete'), 500);
+  const scene = game.level.completionScene ?? (game.levelIndex === 0 ? 'taming' : 'complete');
+  window.setTimeout(() => showOverlay(scene), 500);
 }
 
 function update(dt, now) {
@@ -185,7 +191,7 @@ function update(dt, now) {
     if (game.elapsed - launcher.lastShotAt >= HUNTER_SHOT_COOLDOWN) { launcher.lastShotAt = game.elapsed; spawnProjectile(launcher, 'spear'); }
   });
 
-  if (game.target?.fatalAttack === 'net' && game.elapsed > 3500 && Math.floor((game.elapsed - 3500) / 5000) > Math.floor((game.elapsed - 3500 - dt) / 5000)) {
+  if (game.target?.fatalAttack === 'net' && game.target.hits > 0 && game.elapsed > 3500 && Math.floor((game.elapsed - 3500) / 5000) > Math.floor((game.elapsed - 3500 - dt) / 5000)) {
     const target = game.target;
     const dx = p.x - target.x;
     const dy = p.y - target.y;
@@ -199,6 +205,7 @@ function update(dt, now) {
     const hunter = game.hunters.find((enemy) => enemy.active && Math.abs(shot.x - enemy.x) < 34 && Math.abs(shot.y - (GROUND_Y - 38)) < 42);
     if (hunter) {
       hunter.active = false;
+      if (isWaterLevel()) game.sinkingBoats.push({ x: hunter.x, startedAt: game.elapsed });
       game.message = 'Plazma smoka trafiła łowcę!';
       game.messageUntil = game.elapsed + 1300;
       return false;
@@ -210,8 +217,9 @@ function update(dt, now) {
       game.messageUntil = game.elapsed + 1300;
       return false;
     }
-    if (game.target && Math.abs(shot.x - game.target.x) < 54 && Math.abs(shot.y - game.target.y) < 78) {
+    if (game.target?.hits > 0 && Math.abs(shot.x - game.target.x) < 54 && Math.abs(shot.y - game.target.y) < 78) {
       game.target.hits -= 1; game.targetHitFlash = game.elapsed + 220;
+      if (game.target.hits <= 0 && game.target.type === 'ship') game.target.destroyedAt = game.elapsed;
       game.message = game.target.hits > 0 ? `Cel trafiony! Zostało: ${game.target.hits}` : 'Udało się!';
       game.messageUntil = game.elapsed + 1400;
       return false;
@@ -227,13 +235,17 @@ function update(dt, now) {
     }
     return shot.x > -50 && shot.x < GAME_WIDTH + 50 && shot.y > -50 && shot.y < GAME_HEIGHT + 50 && shot.age < 6500;
   });
+  game.sinkingBoats = game.sinkingBoats.filter((boat) => game.elapsed - boat.startedAt < BOAT_SINK_DURATION);
   if (game.level.completion === 'clearEnemies' && allThreatsDefeated()) completeLevel();
 }
+
+function isWaterLevel() { return game.level.theme === 'ocean' || game.level.theme === 'ice'; }
 
 function allThreatsDefeated() {
   return game.hunters.every((hunter) => !hunter.active)
     && game.launchers.every((launcher) => !launcher.active)
-    && (!game.target || game.target.hits <= 0);
+    && game.sinkingBoats.length === 0
+    && (!game.target || (game.target.hits <= 0 && (!game.target.destroyedAt || game.elapsed - game.target.destroyedAt >= SHIP_SINK_DURATION)));
 }
 
 function drawBackground(theme) {
@@ -264,7 +276,7 @@ function drawMountains(theme) {
 
 function drawLand(colors, theme) {
   context.fillStyle = colors.hill; context.beginPath(); context.moveTo(0, 440); for (let x = 0; x <= GAME_WIDTH; x += 80) context.quadraticCurveTo(x + 40, 400 + Math.sin(x) * 25, x + 80, 440); context.lineTo(GAME_WIDTH, GROUND_Y); context.lineTo(0, GROUND_Y); context.fill();
-  if (theme !== 'camp') for (let x = 60; x < GAME_WIDTH; x += 130) drawTree(x, GROUND_Y - 25, theme === 'forest' ? 1.2 : .85);
+  if (theme !== 'camp') for (let x = 60; x < GAME_WIDTH; x += 130) drawTree(x, GROUND_Y - 5, theme === 'forest' ? 1.2 : .85);
   context.fillStyle = colors.ground; context.fillRect(0, GROUND_Y, GAME_WIDTH, GAME_HEIGHT - GROUND_Y);
   context.fillStyle = colors.ground2; context.fillRect(0, GROUND_Y, GAME_WIDTH, 10);
   for (let x = 10; x < GAME_WIDTH; x += 28) { context.strokeStyle = '#b1df78'; context.lineWidth = 2; context.beginPath(); context.moveTo(x, GROUND_Y + 5); context.lineTo(x + 4, GROUND_Y - 2); context.stroke(); }
@@ -331,8 +343,6 @@ function drawCharacter(character, x, y, width, height, faded = false, flipped = 
 }
 
 function drawBoyFromDrawing(x, y) {
-  // Pozycja gracza jest liczona według dawnej wysokości bohatera; ten mniejszy
-  // sprite ma dolną krawędź dokładnie na ziemi zarówno podczas chodu, jak i skoku.
   if (drawCharacter('boy', x - 16, y - 10, 32, 57)) {
     if (game.player.egg) drawCarriedEgg(x, y);
     return;
@@ -342,7 +352,7 @@ function drawBoyFromDrawing(x, y) {
 
 function drawCarriedEgg(x, y) {
   context.save();
-  context.translate(x + 14, y - 5);
+  context.translate(x + 14, y + 22);
   context.rotate(-.18);
   context.fillStyle = '#f7ebbd'; context.beginPath(); context.ellipse(0, 0, 5.5, 8, 0, 0, Math.PI * 2); context.fill();
   context.strokeStyle = '#9e7158'; context.lineWidth = 2; context.stroke();
@@ -382,6 +392,29 @@ function drawHunterBoat(x) {
   context.restore();
 }
 
+function drawSinkingBoat(boat) {
+  const progress = Math.min(1, (game.elapsed - boat.startedAt) / BOAT_SINK_DURATION);
+  const deckY = GROUND_Y - 4 + progress * 52;
+  context.save();
+  context.translate(boat.x, deckY);
+  context.rotate(progress * .34);
+  context.globalAlpha = 1 - progress * .45;
+  context.fillStyle = '#8a593d';
+  context.beginPath(); context.moveTo(-52, 0); context.lineTo(53, 0); context.lineTo(37, 25); context.lineTo(-37, 25); context.closePath(); context.fill();
+  context.strokeStyle = '#4f352b'; context.lineWidth = 3; context.stroke();
+  context.fillStyle = '#c89054'; context.fillRect(-43, -7, 86, 9);
+  if (progress < .7) drawFlames(0, -14, 13);
+  context.restore();
+}
+
+function drawFlames(x, y, size) {
+  const flicker = Math.sin(game.elapsed / 90 + x) * size * .16;
+  context.fillStyle = '#ef633d';
+  context.beginPath(); context.moveTo(x - size, y + size); context.quadraticCurveTo(x - size * .8, y - size, x, y - size * 1.45 + flicker); context.quadraticCurveTo(x + size * .9, y - size * .45, x + size, y + size); context.closePath(); context.fill();
+  context.fillStyle = '#ffd15d';
+  context.beginPath(); context.moveTo(x - size * .4, y + size * .7); context.quadraticCurveTo(x - size * .2, y - size * .35, x + size * .15, y - size * .72 + flicker); context.quadraticCurveTo(x + size * .58, y - size * .05, x + size * .42, y + size * .7); context.closePath(); context.fill();
+}
+
 function drawCity() {
   const buildings = [
     [310, 440, 70, 105, '#e9a768', '#c96754'],
@@ -410,8 +443,17 @@ function drawTarget(target) {
     context.strokeStyle = '#ddd1b9'; context.lineWidth = 4; for (let x = -25; x <= 25; x += 16) { context.beginPath(); context.moveTo(target.x + x, target.y - 47); context.lineTo(target.x + x, target.y + 15); context.stroke(); }
     context.fillStyle = '#8dd4c6'; context.beginPath(); context.ellipse(target.x, target.y - 7, 20, 15, 0, 0, Math.PI * 2); context.fill();
   } else if (target.type === 'ship') {
+    const sinking = target.destroyedAt ? Math.min(1, (game.elapsed - target.destroyedAt) / SHIP_SINK_DURATION) : 0;
+    const burning = target.hits <= 2 || sinking > 0;
+    context.save();
+    context.translate(0, sinking * 118);
+    context.translate(target.x, target.y + 25);
+    context.rotate(sinking * .22);
+    context.translate(-target.x, -target.y - 25);
     context.fillStyle = flash ? '#f69f56' : '#754e3d'; context.beginPath(); context.moveTo(target.x - 74, target.y + 23); context.lineTo(target.x + 65, target.y + 23); context.lineTo(target.x + 42, target.y + 48); context.lineTo(target.x - 48, target.y + 48); context.closePath(); context.fill();
     context.fillStyle = '#e9d8ae'; context.beginPath(); context.moveTo(target.x - 5, target.y + 21); context.lineTo(target.x - 5, target.y - 78); context.lineTo(target.x + 55, target.y - 7); context.closePath(); context.fill(); context.strokeStyle = '#5c4237'; context.lineWidth = 5; context.beginPath(); context.moveTo(target.x - 5, target.y + 25); context.lineTo(target.x - 5, target.y - 82); context.stroke();
+    if (burning) { drawFlames(target.x - 24, target.y + 13, 17); drawFlames(target.x + 19, target.y + 19, 13); }
+    context.restore();
   } else {
     context.fillStyle = flash ? '#f5ffff' : '#c3eff6'; context.beginPath(); context.moveTo(target.x - 60, target.y + 45); context.lineTo(target.x - 42, target.y - 54); context.lineTo(target.x, target.y - 94); context.lineTo(target.x + 54, target.y - 45); context.lineTo(target.x + 72, target.y + 45); context.closePath(); context.fill(); context.strokeStyle = '#71b6cc'; context.lineWidth = 4; context.stroke();
     context.fillStyle = '#d7f8ff'; context.beginPath(); context.ellipse(target.x, target.y - 10, 27, 33, 0, 0, Math.PI * 2); context.fill(); context.fillStyle = '#587fa5'; context.beginPath(); context.arc(target.x + 9, target.y - 18, 4, 0, Math.PI * 2); context.fill();
@@ -444,10 +486,10 @@ function draw() {
     if (!game.player.egg) {
       context.fillStyle = '#f4e5b8'; context.beginPath(); context.ellipse(game.level.eggX, GROUND_Y - 19, 13, 19, 0, 0, Math.PI * 2); context.fill(); context.strokeStyle = '#d69874'; context.stroke();
     }
-    drawTree(990, GROUND_Y - 4, 1.5); text('LAS', 990, GROUND_Y - 132, 16, '#fffbea', 'center'); drawBoyFromDrawing(game.player.x, game.player.y);
+    drawTree(990, GROUND_Y - 5, 1.5); text('LAS', 990, GROUND_Y - 132, 16, '#fffbea', 'center'); drawBoyFromDrawing(game.player.x, game.player.y);
   } else {
     const onWater = game.level.theme === 'ocean' || game.level.theme === 'ice';
-    game.hunters.filter((hunter) => hunter.active).forEach((hunter) => drawHunterFromDrawing(hunter.x, onWater)); game.launchers.filter((launcher) => launcher.active).forEach((launcher) => drawLauncher(launcher.x)); if (game.target) drawTarget(game.target); drawDragon(game.player.x, game.player.y, performance.now() < game.invulnerableUntil);
+    game.hunters.filter((hunter) => hunter.active).forEach((hunter) => drawHunterFromDrawing(hunter.x, onWater)); game.sinkingBoats.forEach(drawSinkingBoat); game.launchers.filter((launcher) => launcher.active).forEach((launcher) => drawLauncher(launcher.x)); if (game.target) drawTarget(game.target); drawDragon(game.player.x, game.player.y, performance.now() < game.invulnerableUntil);
   }
   drawProjectiles(); drawHud();
 }
@@ -473,8 +515,6 @@ function removeChromaKey(image) {
     const red = pixels.data[index];
     const green = pixels.data[index + 1];
     const blue = pixels.data[index + 2];
-    // JPEG pozostawia kilka odcieni różu przy konturach. Usuwamy wyłącznie
-    // nasycony róż tła, a ciemny ołówek i kolory rysunków pozostają nietknięte.
     const pinkness = (red + blue) / 2 - green;
     if (red > 175 && blue > 145 && pinkness > 115) pixels.data[index + 3] = 0;
   }
