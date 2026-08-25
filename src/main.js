@@ -14,7 +14,7 @@ const dragonMouthOffset = { x: 46, y: -6 };
 const BOAT_SINK_DURATION = 1400;
 const SHIP_SINK_DURATION = 2400;
 const drawingPaths = {
-  taming: '/assets/previews/2-rotated.jpg',
+  taming: '/assets/source-drawings/2.jfif',
   captured: '/assets/source-drawings/6.jfif',
   freedDragon: '/assets/source-drawings/4.jfif',
   iceDragon: '/assets/source-drawings/8.jfif',
@@ -71,7 +71,7 @@ function showOverlay(kind) {
   if (kind === 'menu') {
     overlay.innerHTML = `<div class="panel"><h1>JEŹDCY SMOKÓW<br>NA KOŃCU ŚWIATA</h1><p>Wyrusz z chłopcem i małym smokiem na kolorową wyprawę. Nauczcie się latać, omijajcie łowców i uratujcie Smoka Alfa.</p><button class="play-button" data-action="start">ZACZYNAMY!</button><p class="tiny">Strzałki: ruch i lot &nbsp; • &nbsp; Spacja: plazma</p></div>`;
   } else if (kind === 'taming') {
-    overlay.innerHTML = `<div class="panel story-panel"><img src="${drawingPaths.taming}" alt="Rysunek Matyldy przedstawiający oswajanie smoka" /><h2>Z jaja wykluł się smok!</h2><p>Chłopiec oswoił małego smoka. Od teraz będą razem uczyć się latać.</p><button class="play-button" data-action="next">PIERWSZY LOT</button></div>`;
+    overlay.innerHTML = `<div class="panel story-panel"><div class="taming-image-frame"><img class="taming-image" src="${drawingPaths.taming}" alt="Rysunek Matyldy przedstawiający oswajanie smoka" /></div><h2>Z jaja wykluł się smok!</h2><p>Chłopiec oswoił małego smoka. Od teraz będą razem uczyć się latać.</p><button class="play-button" data-action="next">PIERWSZY LOT</button></div>`;
   } else if (kind === 'gameover') {
     overlay.innerHTML = game.captured
       ? `<div class="panel story-panel"><img src="${drawingPaths.captured}" alt="Rysunek Matyldy przedstawiający smoka schwytanego w sieć" /><h2>Smok został schwytany w sieć!</h2><p>Łowcy złapali smoka, ale możecie spróbować jeszcze raz od początku planszy.</p><button class="play-button" data-action="restart">SPRÓBUJ PONOWNIE</button></div>`
